@@ -14,6 +14,7 @@ import { Route as TimelineRouteImport } from './routes/timeline'
 import { Route as InsiderRouteImport } from './routes/insider'
 import { Route as GuardianRouteImport } from './routes/guardian'
 import { Route as DnaRouteImport } from './routes/dna'
+import { Route as AccessRouteImport } from './routes/access'
 import { Route as IndexRouteImport } from './routes/index'
 
 const TrustRoute = TrustRouteImport.update({
@@ -41,6 +42,11 @@ const DnaRoute = DnaRouteImport.update({
   path: '/dna',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccessRoute = AccessRouteImport.update({
+  id: '/access',
+  path: '/access',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -49,6 +55,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/access': typeof AccessRoute
   '/dna': typeof DnaRoute
   '/guardian': typeof GuardianRoute
   '/insider': typeof InsiderRoute
@@ -57,6 +64,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/access': typeof AccessRoute
   '/dna': typeof DnaRoute
   '/guardian': typeof GuardianRoute
   '/insider': typeof InsiderRoute
@@ -66,6 +74,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/access': typeof AccessRoute
   '/dna': typeof DnaRoute
   '/guardian': typeof GuardianRoute
   '/insider': typeof InsiderRoute
@@ -74,12 +83,27 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dna' | '/guardian' | '/insider' | '/timeline' | '/trust'
+  fullPaths:
+    | '/'
+    | '/access'
+    | '/dna'
+    | '/guardian'
+    | '/insider'
+    | '/timeline'
+    | '/trust'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dna' | '/guardian' | '/insider' | '/timeline' | '/trust'
+  to:
+    | '/'
+    | '/access'
+    | '/dna'
+    | '/guardian'
+    | '/insider'
+    | '/timeline'
+    | '/trust'
   id:
     | '__root__'
     | '/'
+    | '/access'
     | '/dna'
     | '/guardian'
     | '/insider'
@@ -89,6 +113,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccessRoute: typeof AccessRoute
   DnaRoute: typeof DnaRoute
   GuardianRoute: typeof GuardianRoute
   InsiderRoute: typeof InsiderRoute
@@ -133,6 +158,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DnaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/access': {
+      id: '/access'
+      path: '/access'
+      fullPath: '/access'
+      preLoaderRoute: typeof AccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -145,6 +177,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccessRoute: AccessRoute,
   DnaRoute: DnaRoute,
   GuardianRoute: GuardianRoute,
   InsiderRoute: InsiderRoute,
