@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrustRouteImport } from './routes/trust'
 import { Route as TimelineRouteImport } from './routes/timeline'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as InsiderRouteImport } from './routes/insider'
 import { Route as IncidentsRouteImport } from './routes/incidents'
@@ -27,6 +28,11 @@ const TrustRoute = TrustRouteImport.update({
 const TimelineRoute = TimelineRouteImport.update({
   id: '/timeline',
   path: '/timeline',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReportsRoute = ReportsRouteImport.update({
@@ -73,6 +79,7 @@ export interface FileRoutesByFullPath {
   '/incidents': typeof IncidentsRoute
   '/insider': typeof InsiderRoute
   '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
   '/timeline': typeof TimelineRoute
   '/trust': typeof TrustRoute
 }
@@ -84,6 +91,7 @@ export interface FileRoutesByTo {
   '/incidents': typeof IncidentsRoute
   '/insider': typeof InsiderRoute
   '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
   '/timeline': typeof TimelineRoute
   '/trust': typeof TrustRoute
 }
@@ -96,6 +104,7 @@ export interface FileRoutesById {
   '/incidents': typeof IncidentsRoute
   '/insider': typeof InsiderRoute
   '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
   '/timeline': typeof TimelineRoute
   '/trust': typeof TrustRoute
 }
@@ -109,6 +118,7 @@ export interface FileRouteTypes {
     | '/incidents'
     | '/insider'
     | '/reports'
+    | '/settings'
     | '/timeline'
     | '/trust'
   fileRoutesByTo: FileRoutesByTo
@@ -120,6 +130,7 @@ export interface FileRouteTypes {
     | '/incidents'
     | '/insider'
     | '/reports'
+    | '/settings'
     | '/timeline'
     | '/trust'
   id:
@@ -131,6 +142,7 @@ export interface FileRouteTypes {
     | '/incidents'
     | '/insider'
     | '/reports'
+    | '/settings'
     | '/timeline'
     | '/trust'
   fileRoutesById: FileRoutesById
@@ -143,6 +155,7 @@ export interface RootRouteChildren {
   IncidentsRoute: typeof IncidentsRoute
   InsiderRoute: typeof InsiderRoute
   ReportsRoute: typeof ReportsRoute
+  SettingsRoute: typeof SettingsRoute
   TimelineRoute: typeof TimelineRoute
   TrustRoute: typeof TrustRoute
 }
@@ -161,6 +174,13 @@ declare module '@tanstack/react-router' {
       path: '/timeline'
       fullPath: '/timeline'
       preLoaderRoute: typeof TimelineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reports': {
@@ -223,6 +243,7 @@ const rootRouteChildren: RootRouteChildren = {
   IncidentsRoute: IncidentsRoute,
   InsiderRoute: InsiderRoute,
   ReportsRoute: ReportsRoute,
+  SettingsRoute: SettingsRoute,
   TimelineRoute: TimelineRoute,
   TrustRoute: TrustRoute,
 }
