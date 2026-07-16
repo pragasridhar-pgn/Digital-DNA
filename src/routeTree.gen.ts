@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrustRouteImport } from './routes/trust'
 import { Route as TimelineRouteImport } from './routes/timeline'
+import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as InsiderRouteImport } from './routes/insider'
 import { Route as IncidentsRouteImport } from './routes/incidents'
 import { Route as GuardianRouteImport } from './routes/guardian'
@@ -26,6 +27,11 @@ const TrustRoute = TrustRouteImport.update({
 const TimelineRoute = TimelineRouteImport.update({
   id: '/timeline',
   path: '/timeline',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportsRoute = ReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InsiderRoute = InsiderRouteImport.update({
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/guardian': typeof GuardianRoute
   '/incidents': typeof IncidentsRoute
   '/insider': typeof InsiderRoute
+  '/reports': typeof ReportsRoute
   '/timeline': typeof TimelineRoute
   '/trust': typeof TrustRoute
 }
@@ -76,6 +83,7 @@ export interface FileRoutesByTo {
   '/guardian': typeof GuardianRoute
   '/incidents': typeof IncidentsRoute
   '/insider': typeof InsiderRoute
+  '/reports': typeof ReportsRoute
   '/timeline': typeof TimelineRoute
   '/trust': typeof TrustRoute
 }
@@ -87,6 +95,7 @@ export interface FileRoutesById {
   '/guardian': typeof GuardianRoute
   '/incidents': typeof IncidentsRoute
   '/insider': typeof InsiderRoute
+  '/reports': typeof ReportsRoute
   '/timeline': typeof TimelineRoute
   '/trust': typeof TrustRoute
 }
@@ -99,6 +108,7 @@ export interface FileRouteTypes {
     | '/guardian'
     | '/incidents'
     | '/insider'
+    | '/reports'
     | '/timeline'
     | '/trust'
   fileRoutesByTo: FileRoutesByTo
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/guardian'
     | '/incidents'
     | '/insider'
+    | '/reports'
     | '/timeline'
     | '/trust'
   id:
@@ -119,6 +130,7 @@ export interface FileRouteTypes {
     | '/guardian'
     | '/incidents'
     | '/insider'
+    | '/reports'
     | '/timeline'
     | '/trust'
   fileRoutesById: FileRoutesById
@@ -130,6 +142,7 @@ export interface RootRouteChildren {
   GuardianRoute: typeof GuardianRoute
   IncidentsRoute: typeof IncidentsRoute
   InsiderRoute: typeof InsiderRoute
+  ReportsRoute: typeof ReportsRoute
   TimelineRoute: typeof TimelineRoute
   TrustRoute: typeof TrustRoute
 }
@@ -148,6 +161,13 @@ declare module '@tanstack/react-router' {
       path: '/timeline'
       fullPath: '/timeline'
       preLoaderRoute: typeof TimelineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/insider': {
@@ -202,6 +222,7 @@ const rootRouteChildren: RootRouteChildren = {
   GuardianRoute: GuardianRoute,
   IncidentsRoute: IncidentsRoute,
   InsiderRoute: InsiderRoute,
+  ReportsRoute: ReportsRoute,
   TimelineRoute: TimelineRoute,
   TrustRoute: TrustRoute,
 }
