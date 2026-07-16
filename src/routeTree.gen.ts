@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrustRouteImport } from './routes/trust'
 import { Route as TimelineRouteImport } from './routes/timeline'
+import { Route as InsiderRouteImport } from './routes/insider'
 import { Route as GuardianRouteImport } from './routes/guardian'
 import { Route as DnaRouteImport } from './routes/dna'
 import { Route as IndexRouteImport } from './routes/index'
@@ -23,6 +24,11 @@ const TrustRoute = TrustRouteImport.update({
 const TimelineRoute = TimelineRouteImport.update({
   id: '/timeline',
   path: '/timeline',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InsiderRoute = InsiderRouteImport.update({
+  id: '/insider',
+  path: '/insider',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GuardianRoute = GuardianRouteImport.update({
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dna': typeof DnaRoute
   '/guardian': typeof GuardianRoute
+  '/insider': typeof InsiderRoute
   '/timeline': typeof TimelineRoute
   '/trust': typeof TrustRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dna': typeof DnaRoute
   '/guardian': typeof GuardianRoute
+  '/insider': typeof InsiderRoute
   '/timeline': typeof TimelineRoute
   '/trust': typeof TrustRoute
 }
@@ -60,21 +68,30 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dna': typeof DnaRoute
   '/guardian': typeof GuardianRoute
+  '/insider': typeof InsiderRoute
   '/timeline': typeof TimelineRoute
   '/trust': typeof TrustRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dna' | '/guardian' | '/timeline' | '/trust'
+  fullPaths: '/' | '/dna' | '/guardian' | '/insider' | '/timeline' | '/trust'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dna' | '/guardian' | '/timeline' | '/trust'
-  id: '__root__' | '/' | '/dna' | '/guardian' | '/timeline' | '/trust'
+  to: '/' | '/dna' | '/guardian' | '/insider' | '/timeline' | '/trust'
+  id:
+    | '__root__'
+    | '/'
+    | '/dna'
+    | '/guardian'
+    | '/insider'
+    | '/timeline'
+    | '/trust'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DnaRoute: typeof DnaRoute
   GuardianRoute: typeof GuardianRoute
+  InsiderRoute: typeof InsiderRoute
   TimelineRoute: typeof TimelineRoute
   TrustRoute: typeof TrustRoute
 }
@@ -93,6 +110,13 @@ declare module '@tanstack/react-router' {
       path: '/timeline'
       fullPath: '/timeline'
       preLoaderRoute: typeof TimelineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/insider': {
+      id: '/insider'
+      path: '/insider'
+      fullPath: '/insider'
+      preLoaderRoute: typeof InsiderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/guardian': {
@@ -123,6 +147,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DnaRoute: DnaRoute,
   GuardianRoute: GuardianRoute,
+  InsiderRoute: InsiderRoute,
   TimelineRoute: TimelineRoute,
   TrustRoute: TrustRoute,
 }
