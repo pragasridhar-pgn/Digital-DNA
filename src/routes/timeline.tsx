@@ -51,7 +51,7 @@ function TimelinePage() {
     <div className="space-y-6">
       <PageHeader
         title="Trust Timeline"
-        subtitle="Every trust change with attributable evidence — Sage Weber · Last 24 hours"
+        subtitle="Every trust change with attributable evidence — Riya Patel · Last 24 hours"
         actions={<Badge variant="info">42 events analyzed</Badge>}
       />
 

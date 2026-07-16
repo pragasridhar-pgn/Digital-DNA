@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -12,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppLayout } from "../components/AppLayout";
+import { isAuthenticated } from "../lib/auth";
 
 function NotFoundComponent() {
   return (
@@ -115,6 +117,25 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  useEffect(() => {
+    const auth = isAuthenticated();
+    if (!auth) {
+      if (pathname === "/") {
+        router.navigate({ to: "/landing" });
+        return;
+      }
+      if (pathname !== "/login" && pathname !== "/landing") {
+        router.navigate({ to: "/login" });
+        return;
+      }
+    }
+    if (auth && (pathname === "/login" || pathname === "/landing")) {
+      router.navigate({ to: "/" });
+    }
+  }, [pathname, router]);
 
   return (
     <QueryClientProvider client={queryClient}>

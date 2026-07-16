@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Activity, Zap, Radio } from "lucide-react";
+import { Activity, Zap, Radio, ShieldCheck } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, CartesianGrid, Tooltip } from "recharts";
+import { getAuthUser } from "@/lib/auth";
 import { PageHeader } from "@/components/AppLayout";
-import { GlassCard, TrustScoreRing, Badge } from "@/components/ui-blocks";
-import { employees, trustBg, trustLevel } from "@/lib/mock-data";
+import { GlassCard, TrustScoreRing, Badge, StatCard } from "@/components/ui-blocks";
+import { computeOrgTrustScore, computeTrustDistribution, countHighRiskUsers, countLiveSessions, employees, orgMetrics, trustBg, trustLevel } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/trust")({
   head: () => ({
@@ -21,6 +22,11 @@ function useLiveHistory(base: number) {
   const [data, setData] = useState(() =>
     Array.from({ length: 30 }, (_, i) => ({ t: i, score: base + Math.sin(i / 3) * 6 }))
   );
+
+  useEffect(() => {
+    setData(Array.from({ length: 30 }, (_, i) => ({ t: i, score: base + Math.sin(i / 3) * 6 })));
+  }, [base]);
+
   useEffect(() => {
     const id = setInterval(() => {
       setData((prev) => {
@@ -35,12 +41,59 @@ function useLiveHistory(base: number) {
 }
 
 function TrustPage() {
-  const [orgTrust, setOrgTrust] = useState(87);
-  const liveData = useLiveHistory(orgTrust);
-  const active = employees.filter((e) => e.status === "online" || e.status === "idle").slice(0, 8);
+  const [authUser, setAuthUser] = useState(() => getAuthUser());
 
   useEffect(() => {
-    const id = setInterval(() => setOrgTrust((s) => Math.max(70, Math.min(95, s + (Math.random() - 0.5) * 2))), 2000);
+    setAuthUser(getAuthUser());
+  }, []);
+
+  const targetEmployees = useMemo(() => {
+    if (authUser?.role === "Super Admin") return employees;
+    if (authUser) return employees.filter((employee) => employee.department === authUser.department);
+    return employees;
+  }, [authUser]);
+
+  const [orgTrust, setOrgTrust] = useState(() => computeOrgTrustScore(targetEmployees));
+  const trustDistribution = useMemo(() => computeTrustDistribution(targetEmployees), [targetEmployees]);
+  const liveData = useLiveHistory(orgTrust);
+  const active = targetEmployees.filter((e) => e.status === "online" || e.status === "idle").slice(0, 8);
+  const liveSessions = useMemo(() => countLiveSessions(targetEmployees), [targetEmployees]);
+  const highRiskUsers = useMemo(() => countHighRiskUsers(targetEmployees), [targetEmployees]);
+
+  useEffect(() => {
+    setOrgTrust(computeOrgTrustScore(targetEmployees));
+  }, [targetEmployees]);
+
+  const trustPosture = useMemo(() => {
+    const level = trustLevel(orgTrust);
+    if (orgTrust >= 85) {
+      return {
+        label: "Stable trust posture",
+        summary: "Org trust is strong, with broad high-confidence behavior across the workforce.",
+        status: "Healthy",
+        accent: "success",
+      };
+    }
+    if (orgTrust >= 70) {
+      return {
+        label: "Cautionary posture",
+        summary: "Trust remains solid, but a few sessions require stepped-up scrutiny.",
+        status: "Monitored",
+        accent: "info",
+      };
+    }
+    return {
+      label: "Elevated risk posture",
+      summary: "Trust is degrading; security should review high-risk access and adaptive controls.",
+      status: "Attention",
+      accent: "warning",
+    };
+  }, [orgTrust]);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setOrgTrust((current) => Math.max(70, Math.min(95, current + (Math.random() - 0.5) * 2)));
+    }, 2000);
     return () => clearInterval(id);
   }, []);
 
@@ -48,7 +101,7 @@ function TrustPage() {
     <div className="space-y-6">
       <PageHeader
         title="Live Trust Monitor"
-        subtitle="Continuous 0-100 Trust Score streaming across the workforce"
+        subtitle="Organizational trust posture, AI confidence, and risk analytics in a single view."
         actions={
           <Badge variant="success">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 pulse-ring" /> LIVE STREAM
@@ -56,7 +109,87 @@ function TrustPage() {
         }
       />
 
+      <div className="grid gap-4 xl:grid-cols-4">
+        <StatCard
+          label="Org Trust Score"
+          value={`${orgTrust} / 100`}
+          delta="Live average"
+          icon={<ShieldCheck className="h-5 w-5" />}
+          accent="emerald"
+        />
+        <StatCard
+          label="AI Confidence"
+          value={`${orgMetrics.aiConfidence.toFixed(1)}%`}
+          delta="+1.2%"
+          icon={<Activity className="h-5 w-5" />}
+          accent="cyan"
+        />
+        <StatCard
+          label="Live Sessions"
+          value={liveSessions}
+          delta="active now"
+          icon={<Zap className="h-5 w-5" />}
+          accent="cyan"
+        />
+        <StatCard
+          label="High-Risk Users"
+          value={highRiskUsers}
+          delta="department signal"
+          icon={<Radio className="h-5 w-5" />}
+          accent="amber"
+        />
+      </div>
+
       <div className="grid gap-4 lg:grid-cols-3">
+        <GlassCard className="lg:col-span-2">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="font-semibold">Organizational Trust Posture</h3>
+              <p className="text-xs text-muted-foreground">Executive summary of current risk and confidence posture.</p>
+            </div>
+            <Badge variant={trustPosture.accent}>{trustPosture.status}</Badge>
+          </div>
+          <div className="space-y-4 text-sm text-slate-600">
+            <div>
+              <div className="text-[11px] uppercase tracking-[0.3em] text-slate-400">Posture</div>
+              <div className="mt-2 text-base font-semibold text-slate-900">{trustPosture.label}</div>
+              <div className="mt-2 leading-6">{trustPosture.summary}</div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-3xl bg-slate-50 border border-slate-200/70 p-4">
+                <div className="text-[11px] uppercase tracking-[0.3em] text-slate-400">Policy enforcement</div>
+                <div className="mt-2 text-sm text-slate-900">Adaptive Zero Trust gating with behavioral risk signals.</div>
+              </div>
+              <div className="rounded-3xl bg-slate-50 border border-slate-200/70 p-4">
+                <div className="text-[11px] uppercase tracking-[0.3em] text-slate-400">Action focus</div>
+                <div className="mt-2 text-sm text-slate-900">Monitor high-risk users and step up verification on suspicious sessions.</div>
+              </div>
+            </div>
+          </div>
+        </GlassCard>
+
+        <GlassCard>
+          <div className="mb-4">
+            <h3 className="font-semibold">Trust Distribution</h3>
+            <p className="text-xs text-muted-foreground">Breakdown of trust confidence across the workforce.</p>
+          </div>
+          <div className="space-y-3">
+            {trustDistribution.map((item) => (
+              <div key={item.name} className="space-y-2">
+                <div className="flex items-center justify-between text-sm font-medium text-slate-900">
+                  <span>{item.name}</span>
+                  <span>{item.value}%</span>
+                </div>
+                <div className="h-2 rounded-full bg-slate-900/10 overflow-hidden">
+                  <div className="h-full rounded-full" style={{ width: `${item.value}%`, background: item.color }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-4">
         <GlassCard className="lg:col-span-1 flex flex-col items-center justify-center py-8">
           <div className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Live Org Trust</div>
           <TrustScoreRing score={Math.round(orgTrust)} size={180} label="of 100" />

@@ -13,12 +13,16 @@ import { Route as TrustRouteImport } from './routes/trust'
 import { Route as TimelineRouteImport } from './routes/timeline'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as LandingRouteImport } from './routes/landing'
 import { Route as InsiderRouteImport } from './routes/insider'
 import { Route as IncidentsRouteImport } from './routes/incidents'
 import { Route as GuardianRouteImport } from './routes/guardian'
 import { Route as DnaRouteImport } from './routes/dna'
+import { Route as ActiveUsersRouteImport } from './routes/active-users'
 import { Route as AccessRouteImport } from './routes/access'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EmployeeEmployeeIdRouteImport } from './routes/employee/$employeeId'
 
 const TrustRoute = TrustRouteImport.update({
   id: '/trust',
@@ -38,6 +42,16 @@ const SettingsRoute = SettingsRouteImport.update({
 const ReportsRoute = ReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LandingRoute = LandingRouteImport.update({
+  id: '/landing',
+  path: '/landing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InsiderRoute = InsiderRouteImport.update({
@@ -60,6 +74,11 @@ const DnaRoute = DnaRouteImport.update({
   path: '/dna',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ActiveUsersRoute = ActiveUsersRouteImport.update({
+  id: '/active-users',
+  path: '/active-users',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AccessRoute = AccessRouteImport.update({
   id: '/access',
   path: '/access',
@@ -70,94 +89,127 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmployeeEmployeeIdRoute = EmployeeEmployeeIdRouteImport.update({
+  id: '/employee/$employeeId',
+  path: '/employee/$employeeId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/access': typeof AccessRoute
+  '/active-users': typeof ActiveUsersRoute
   '/dna': typeof DnaRoute
   '/guardian': typeof GuardianRoute
   '/incidents': typeof IncidentsRoute
   '/insider': typeof InsiderRoute
+  '/landing': typeof LandingRoute
+  '/login': typeof LoginRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/timeline': typeof TimelineRoute
   '/trust': typeof TrustRoute
+  '/employee/$employeeId': typeof EmployeeEmployeeIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/access': typeof AccessRoute
+  '/active-users': typeof ActiveUsersRoute
   '/dna': typeof DnaRoute
   '/guardian': typeof GuardianRoute
   '/incidents': typeof IncidentsRoute
   '/insider': typeof InsiderRoute
+  '/landing': typeof LandingRoute
+  '/login': typeof LoginRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/timeline': typeof TimelineRoute
   '/trust': typeof TrustRoute
+  '/employee/$employeeId': typeof EmployeeEmployeeIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/access': typeof AccessRoute
+  '/active-users': typeof ActiveUsersRoute
   '/dna': typeof DnaRoute
   '/guardian': typeof GuardianRoute
   '/incidents': typeof IncidentsRoute
   '/insider': typeof InsiderRoute
+  '/landing': typeof LandingRoute
+  '/login': typeof LoginRoute
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/timeline': typeof TimelineRoute
   '/trust': typeof TrustRoute
+  '/employee/$employeeId': typeof EmployeeEmployeeIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/access'
+    | '/active-users'
     | '/dna'
     | '/guardian'
     | '/incidents'
     | '/insider'
+    | '/landing'
+    | '/login'
     | '/reports'
     | '/settings'
     | '/timeline'
     | '/trust'
+    | '/employee/$employeeId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/access'
+    | '/active-users'
     | '/dna'
     | '/guardian'
     | '/incidents'
     | '/insider'
+    | '/landing'
+    | '/login'
     | '/reports'
     | '/settings'
     | '/timeline'
     | '/trust'
+    | '/employee/$employeeId'
   id:
     | '__root__'
     | '/'
     | '/access'
+    | '/active-users'
     | '/dna'
     | '/guardian'
     | '/incidents'
     | '/insider'
+    | '/landing'
+    | '/login'
     | '/reports'
     | '/settings'
     | '/timeline'
     | '/trust'
+    | '/employee/$employeeId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccessRoute: typeof AccessRoute
+  ActiveUsersRoute: typeof ActiveUsersRoute
   DnaRoute: typeof DnaRoute
   GuardianRoute: typeof GuardianRoute
   IncidentsRoute: typeof IncidentsRoute
   InsiderRoute: typeof InsiderRoute
+  LandingRoute: typeof LandingRoute
+  LoginRoute: typeof LoginRoute
   ReportsRoute: typeof ReportsRoute
   SettingsRoute: typeof SettingsRoute
   TimelineRoute: typeof TimelineRoute
   TrustRoute: typeof TrustRoute
+  EmployeeEmployeeIdRoute: typeof EmployeeEmployeeIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -190,6 +242,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReportsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/landing': {
+      id: '/landing'
+      path: '/landing'
+      fullPath: '/landing'
+      preLoaderRoute: typeof LandingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/insider': {
       id: '/insider'
       path: '/insider'
@@ -218,6 +284,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DnaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/active-users': {
+      id: '/active-users'
+      path: '/active-users'
+      fullPath: '/active-users'
+      preLoaderRoute: typeof ActiveUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/access': {
       id: '/access'
       path: '/access'
@@ -232,21 +305,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/employee/$employeeId': {
+      id: '/employee/$employeeId'
+      path: '/employee/$employeeId'
+      fullPath: '/employee/$employeeId'
+      preLoaderRoute: typeof EmployeeEmployeeIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccessRoute: AccessRoute,
+  ActiveUsersRoute: ActiveUsersRoute,
   DnaRoute: DnaRoute,
   GuardianRoute: GuardianRoute,
   IncidentsRoute: IncidentsRoute,
   InsiderRoute: InsiderRoute,
+  LandingRoute: LandingRoute,
+  LoginRoute: LoginRoute,
   ReportsRoute: ReportsRoute,
   SettingsRoute: SettingsRoute,
   TimelineRoute: TimelineRoute,
   TrustRoute: TrustRoute,
+  EmployeeEmployeeIdRoute: EmployeeEmployeeIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

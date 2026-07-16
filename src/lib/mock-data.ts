@@ -52,11 +52,11 @@ export interface Incident {
   trustImpact: number;
 }
 
-const firstNames = ["Aria", "Kai", "Nova", "Zane", "Luna", "Rhys", "Eden", "Milo", "Sage", "Orion", "Iris", "Theo", "Wren", "Axel", "Juno", "Ezra"];
-const lastNames = ["Chen", "Patel", "Okafor", "Rivera", "Nakamura", "Volkov", "Silva", "Kim", "Weber", "Hassan", "Bergman", "Costa"];
+const firstNames = ["Aarav", "Anaya", "Kiran", "Ishaan", "Neha", "Riya", "Arjun", "Priya", "Dhruv", "Sanya", "Kabir", "Meera", "Raj", "Anjali", "Vikram", "Tara"];
+const lastNames = ["Sharma", "Patel", "Gupta", "Iyer", "Reddy", "Singh", "Kumar", "Mehta", "Agarwal", "Das", "Joshi", "Nair"];
 const departments = ["Engineering", "Finance", "Executive", "Legal", "Sales", "HR", "Security", "Operations", "Marketing", "Product"];
 const roles = ["Senior Engineer", "Analyst", "Director", "VP", "Manager", "Specialist", "Lead", "Architect"];
-const locations = ["San Francisco, US", "London, UK", "Berlin, DE", "Singapore, SG", "Tokyo, JP", "Toronto, CA", "Sydney, AU", "Dubai, AE"];
+const locations = ["Mumbai, IN", "Bengaluru, IN", "Delhi, IN", "Chennai, IN", "Hyderabad, IN", "Pune, IN", "Kolkata, IN", "Ahmedabad, IN"];
 const devices = ["MacBook Pro M3", "ThinkPad X1", "Surface Laptop 6", "Dell XPS 15", "MacBook Air M2", "iPad Pro"];
 
 function seeded(i: number) {
@@ -123,6 +123,44 @@ export function trustBg(score: number): string {
   }[l];
 }
 
+export function computeOrgTrustScore(data: Employee[]) {
+  if (!data.length) return 0;
+  const active = data.filter((user) => user.status !== "offline");
+  const target = active.length ? active : data;
+  const average = target.reduce((sum, user) => sum + user.trustScore, 0) / target.length;
+  return Math.round(average);
+}
+
+export function countLiveSessions(data: Employee[]) {
+  return data.filter((user) => user.status !== "offline").length;
+}
+
+export function countHighRiskUsers(data: Employee[]) {
+  return data.filter((user) => {
+    const level = trustLevel(user.trustScore);
+    return level === "low" || level === "critical";
+  }).length;
+}
+
+export function computeTrustDistribution(data: Employee[]) {
+  if (!data.length) return [];
+  const totals = { high: 0, medium: 0, low: 0, critical: 0 };
+  data.forEach((user) => {
+    totals[trustLevel(user.trustScore)] += 1;
+  });
+  const build = (name: string, level: keyof typeof totals, color: string) => ({
+    name,
+    value: Math.round((totals[level] / data.length) * 100),
+    color,
+  });
+  return [
+    build("High Trust", "high", "oklch(0.75 0.17 155)"),
+    build("Medium Trust", "medium", "oklch(0.82 0.15 200)"),
+    build("Low Trust", "low", "oklch(0.8 0.17 80)"),
+    build("Critical", "critical", "oklch(0.65 0.24 25)"),
+  ];
+}
+
 export function accessPolicy(score: number): { level: string; description: string; color: string } {
   if (score >= 80) return { level: "Full Access", description: "All resources granted", color: "emerald" };
   if (score >= 60) return { level: "MFA Challenge", description: "Step-up authentication required", color: "cyan" };
@@ -137,12 +175,7 @@ export const trustHistory: { time: string; org: number; ai: number; anomaly: num
   anomaly: Math.floor(seeded(i + 40) * 20 + (i > 14 && i < 19 ? 30 : 0)),
 }));
 
-export const trustDistribution = [
-  { name: "High Trust", value: 62, color: "oklch(0.75 0.17 155)" },
-  { name: "Medium Trust", value: 24, color: "oklch(0.82 0.15 200)" },
-  { name: "Low Trust", value: 10, color: "oklch(0.8 0.17 80)" },
-  { name: "Critical", value: 4, color: "oklch(0.65 0.24 25)" },
-];
+export const trustDistribution = computeTrustDistribution(employees);
 
 export const departmentRisk = departments.slice(0, 8).map((d, i) => ({
   department: d,
@@ -177,11 +210,11 @@ export const threatTimeline = Array.from({ length: 12 }, (_, i) => ({
 }));
 
 export const orgMetrics = {
-  orgTrustScore: 87,
-  activeUsers: 1284,
-  liveSessions: 947,
-  highRiskUsers: 12,
+  orgTrustScore: computeOrgTrustScore(employees),
+  activeUsers: employees.length,
+  liveSessions: countLiveSessions(employees),
+  highRiskUsers: countHighRiskUsers(employees),
   aiConfidence: 96.4,
-  criticalIncidents: 3,
-  securityHealth: 94,
+  criticalIncidents: incidents.filter((incident) => incident.severity === "critical").length,
+  securityHealth: Math.max(65, 100 - countHighRiskUsers(employees) * 2),
 };

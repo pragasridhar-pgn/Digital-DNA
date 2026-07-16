@@ -28,9 +28,9 @@ const seed: Message[] = [
   {
     id: 1,
     role: "ai",
-    text: "Trust dropped 32 points for Sage Weber. I detected an impossible-travel event combined with a keystroke biometric mismatch. Session has been isolated pending review.",
+    text: "Trust dropped 32 points for Riya Patel. I detected an impossible-travel event combined with a keystroke biometric mismatch. Session has been isolated pending review.",
     evidence: [
-      "Login from Singapore 12 min after San Francisco session (geo distance: 13,600 km)",
+      "Login from Singapore 12 min after Mumbai session (geo distance: 13,600 km)",
       "Typing dwell time deviates 84% from 30-day baseline",
       "Device fingerprint absent from MDM inventory",
       "Attempted access to /finance/2024-audit (never accessed before)",
@@ -41,9 +41,9 @@ const seed: Message[] = [
 ];
 
 const suggested = [
-  "Why did Kai Patel's trust score drop?",
+  "Why did Kiran Iyer's trust score drop?",
   "Summarize today's critical incidents",
-  "Predict impact of granting admin access to Milo Rivera",
+  "Predict impact of granting admin access to Vikram Nair",
   "Which department has the highest anomaly rate?",
 ];
 

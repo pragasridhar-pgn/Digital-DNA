@@ -26,7 +26,7 @@ type Stage = {
 };
 
 const stages: Stage[] = [
-  { key: "learn", label: "Baseline Learning", narrative: "AI observes typical login times, device, geo, typing rhythm and file-access scope for Sage Weber. DNA fingerprint stabilizing.", trust: 92, badge: "success", icon: CheckCircle2 },
+  { key: "learn", label: "Baseline Learning", narrative: "AI observes typical login times, device, geo, typing rhythm and file-access scope for Riya Patel. DNA fingerprint stabilizing.", trust: 92, badge: "success", icon: CheckCircle2 },
   { key: "normal", label: "Normal Behavior", narrative: "Session matches baseline: office IP, MacBook Pro fingerprint, typing dwell within 2ms, file access within scope.", trust: 88, badge: "success", icon: Activity },
   { key: "suspicious", label: "Suspicious Deviation", narrative: "New device fingerprint. Access to /finance/2024-audit (never accessed before). Typing rhythm 84% off baseline.", trust: 54, badge: "warning", icon: AlertTriangle },
   { key: "drop", label: "Trust Collapse", narrative: "Impossible-travel event detected. Bulk file download initiated: 240 files in 4 minutes. Behavior deviates 87% from baseline.", trust: 22, badge: "danger", icon: ShieldAlert },
@@ -98,9 +98,9 @@ function InsiderPage() {
           <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Target subject</div>
           <div className="flex flex-col items-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 text-xl font-bold text-slate-950 glow-cyan">
-              SW
+              RP
             </div>
-            <div className="mt-2 font-semibold">Sage Weber</div>
+            <div className="mt-2 font-semibold">Riya Patel</div>
             <div className="text-xs text-muted-foreground">Finance · Senior Analyst</div>
           </div>
           <div className="mt-6">
