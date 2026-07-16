@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrustRouteImport } from './routes/trust'
+import { Route as GuardianRouteImport } from './routes/guardian'
 import { Route as DnaRouteImport } from './routes/dna'
 import { Route as IndexRouteImport } from './routes/index'
 
 const TrustRoute = TrustRouteImport.update({
   id: '/trust',
   path: '/trust',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GuardianRoute = GuardianRouteImport.update({
+  id: '/guardian',
+  path: '/guardian',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DnaRoute = DnaRouteImport.update({
@@ -32,30 +38,34 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dna': typeof DnaRoute
+  '/guardian': typeof GuardianRoute
   '/trust': typeof TrustRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dna': typeof DnaRoute
+  '/guardian': typeof GuardianRoute
   '/trust': typeof TrustRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dna': typeof DnaRoute
+  '/guardian': typeof GuardianRoute
   '/trust': typeof TrustRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dna' | '/trust'
+  fullPaths: '/' | '/dna' | '/guardian' | '/trust'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dna' | '/trust'
-  id: '__root__' | '/' | '/dna' | '/trust'
+  to: '/' | '/dna' | '/guardian' | '/trust'
+  id: '__root__' | '/' | '/dna' | '/guardian' | '/trust'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DnaRoute: typeof DnaRoute
+  GuardianRoute: typeof GuardianRoute
   TrustRoute: typeof TrustRoute
 }
 
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/trust'
       fullPath: '/trust'
       preLoaderRoute: typeof TrustRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/guardian': {
+      id: '/guardian'
+      path: '/guardian'
+      fullPath: '/guardian'
+      preLoaderRoute: typeof GuardianRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dna': {
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DnaRoute: DnaRoute,
+  GuardianRoute: GuardianRoute,
   TrustRoute: TrustRoute,
 }
 export const routeTree = rootRouteImport
